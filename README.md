@@ -32,7 +32,7 @@ Currently using **Bhagavata Purana** as the demo knowledge base. You can replace
 **1. Install dependencies**
 
 ```bash
-git clone https://github.com/MeetSolanki530/ragmind.git
+git clone https://github.com/MeetSolanki530/ragmindai.git
 cd ragmind/backend
 pip install -r requirements.txt
 ```
