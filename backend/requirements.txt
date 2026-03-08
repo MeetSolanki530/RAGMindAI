@@ -6,13 +6,13 @@ langchain
 
 langchain-community
 
-langchain-openai #use nvidia ai and embeddings
+langchain-nvidia-ai-endpoints
+
+faiss-cpu
 
 openai
 
 tiktoken
-
-# pinecone-client
 
 pypdf
 

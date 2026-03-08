@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAGMind</title>
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+  <main class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="model-badge">RagMind</span>
+        <span class="beta-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 3L5 6.99h4V14H7l-4 4.01L7 22h10l4-3.99L17 14h-2V6.99h4L15 3H9z" fill="currentColor"/></svg>
+          BETA
+        </span>
+      </div>
+      <div class="topbar-right">
+        <button class="new-chat-btn" id="new-chat-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          New Chat
+        </button>
+        <a class="github-link" href="https://github.com/MeetSolanki530/ragmind" target="_blank" rel="noopener noreferrer" title="View on GitHub">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div class="messages-wrap" id="messages-wrap">
+      <div id="messages" class="messages">
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Sparkle/AI star icon similar to ChatGPT's -->
+              <path d="M28 4C28 4 31.5 16.5 34 20C36.5 23.5 44 28 44 28C44 28 36.5 32.5 34 36C31.5 39.5 28 52 28 52C28 52 24.5 39.5 22 36C19.5 32.5 12 28 12 28C12 28 19.5 23.5 22 20C24.5 16.5 28 4 28 4Z" fill="#00A67E"/>
+              <path d="M44 8C44 8 45.5 12.5 46.5 13.5C47.5 14.5 52 16 52 16C52 16 47.5 17.5 46.5 18.5C45.5 19.5 44 24 44 24C44 24 42.5 19.5 41.5 18.5C40.5 17.5 36 16 36 16C36 16 40.5 14.5 41.5 13.5C42.5 12.5 44 8 44 8Z" fill="#00A67E" opacity="0.5"/>
+            </svg>
+          </div>
+          <h2>How can I help you today?</h2>
+          <p>Ask questions about your documents. I'll retrieve the most relevant context and answer with precision.</p>
+          <p class="demo-note">For this demo, we are using <strong>Bhagavata Purana</strong> (an ancient Indian scripture) as the knowledge base.</p>
+          <div class="suggestion-chips">
+            <button class="chip">What is this document about?</button>
+            <button class="chip">List the key points covered in the document</button>
+            <button class="chip">Are there any important dates or deadlines mentioned?</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area">
+      <div class="input-box-wrap">
+        <textarea
+          id="user-input"
+          placeholder="Message RAGMind…"
+          rows="1"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button id="send-btn" class="send-btn" disabled aria-label="Send">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L13 8 3 3v4l6 1-6 1v4z" fill="currentColor"/></svg>
+        </button>
+      </div>
+      <p class="input-disclaimer">RagMind can make mistakes. Verify important information.</p>
+    </div>
+
+  </main>
+
+  <script src="static/js/app.js"></script>
+</body>
+</html>

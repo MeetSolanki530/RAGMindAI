@@ -1,108 +1,69 @@
-from dotenv import load_dotenv
 import os
+import sys
 import asyncio
 
+# Allow running as a standalone script
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 from langchain_community.document_loaders import PyPDFDirectoryLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 
-load_dotenv()
-
-
-#Getting all Env variables
-document_folder_path = os.getenv("DOCUMENT_FOLDER")
-embedding_model = os.getenv("EMBEDDING_MODEL")
-
-vector_database_type = os.getenv("VECTOR_DB")
-vector_store_path = os.getenv("VECTOR_STORE_PATH")
-
-chunk_limits = int(os.getenv("MAX_CONTEXT_CHUNKS"))
-chunk_size = int(os.getenv("CHUNK_SIZE"))
-chunk_overlap = int(os.getenv("CHUNK_OVERLAP"))
-
-openai_api_key = os.getenv("OPENAI_API_KEY")
-openai_base_url = os.getenv("OPENAI_BASE_URL")
+from app.config.settings import get_settings
+from app.rag.embeddings import get_embedding_service
+from app.utils.text_chunker import get_text_splitter
 
 
 class IngestDocument:
-    
-    def __init__(self,document_folder_path : str):
+
+    def __init__(self, document_folder_path: str):
         self.document_folder_path = document_folder_path
         self.splitted_document = None
-        self.document_content = None
-    
-    async def load_document_split_document_content(self):
-    
-        self.document_content = await PyPDFDirectoryLoader(path=self.document_folder_path).aload()
 
-        if not self.document_content:
+    async def load_and_split(self):
+        docs = await PyPDFDirectoryLoader(path=self.document_folder_path).aload()
+        if not docs:
             raise ValueError("No documents found in the document folder")
+        print(f"Loaded {len(docs)} pages")
 
-        print(f"Loaded {len(self.document_content)} documents")
-
-
-        self.splitted_document = await RecursiveCharacterTextSplitter(chunk_size = chunk_size,chunk_overlap=chunk_overlap).atransform_documents(documents=self.document_content)
-    
+        splitter = get_text_splitter()
+        self.splitted_document = await splitter.atransform_documents(documents=docs)
         return self.splitted_document
-    
-    async def embed_document_vectorstore(self):
 
+    async def embed_and_store(self):
+        settings = get_settings()
         print("Preparing documents for embedding...")
 
-        # Remove invalid or empty chunks
-        self.clean_documents = []
+        clean_docs = [
+            doc for doc in self.splitted_document
+            if isinstance(doc.page_content, str) and doc.page_content.strip()
+        ]
+        for doc in clean_docs:
+            doc.page_content = doc.page_content.strip()
 
-        for doc in self.splitted_document:
-            if isinstance(doc.page_content, str):
-                text = doc.page_content.strip()
-                doc.page_content = text
-                self.clean_documents.append(doc)
+        embedding_service = get_embedding_service()
 
-
-        embedding_service = NVIDIAEmbeddings(base_url=openai_base_url,
-                                             api_key=openai_api_key,
-                                             model=embedding_model)
-        
-        if vector_database_type.lower() == "faiss":
-            vectorstore = await FAISS.afrom_documents(self.clean_documents,embedding=embedding_service)
-
+        if settings.vector_db.lower() == "faiss":
+            vectorstore = await FAISS.afrom_documents(clean_docs, embedding=embedding_service)
         else:
-            raise NotImplementedError("Other VectorStores Features Coming Soon...")
-        
-        os.makedirs(vector_store_path, exist_ok=True)
+            raise NotImplementedError("Other VectorStore types coming soon...")
 
+        os.makedirs(settings.vector_store_path, exist_ok=True)
+        vectorstore.save_local(settings.vector_store_path)
+        print(f"Vector store saved to {settings.vector_store_path}")
 
-        vectorstore.save_local(vector_store_path)
-
-        print(f"Vector store saved to {vector_store_path}")
-
-        
 
 async def main():
-
+    settings = get_settings()
     print("Starting document ingestion pipeline...")
 
-    ingestor = IngestDocument(document_folder_path)
+    ingestor = IngestDocument(settings.document_folder)
+    await ingestor.load_and_split()
+    print("Documents loaded & split successfully...")
 
-    await ingestor.load_document_split_document_content()
-
-    print("Documents Loaded & Splitted Succesfully...")
-
-    await ingestor.embed_document_vectorstore()
-
+    await ingestor.embed_and_store()
     print("Document ingestion completed successfully!")
-
 
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-    
-
-    
-
-    
-    
 
