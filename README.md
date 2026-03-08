@@ -1,6 +1,6 @@
-# RAGMind
+# RAGMind AI
 
-**RAGMind** - AI that retrieves knowledge before it answers.
+**RAGMind AI** - AI that retrieves knowledge before it answers.
 
 FastAPI backend with streaming responses, FAISS vector search, and a ChatGPT-style frontend.
 
@@ -10,7 +10,7 @@ Currently using **Bhagavata Purana** as the demo knowledge base. You can replace
 
 ## Demo
 
-[![RAGMind Demo](https://img.youtube.com/vi/KG0ktySviAM/maxresdefault.jpg)](https://youtu.be/KG0ktySviAM)
+[![RAGMind AI Demo](https://img.youtube.com/vi/KG0ktySviAM/maxresdefault.jpg)](https://youtu.be/KG0ktySviAM)
 
 ---
 
